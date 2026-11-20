@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reviews   Review[]
+  entities  Entity[]
+
+  @@map("users")
+}
+
+model Entity {
+  id        String   @id @default(uuid())
+  name      String?
+  type      String   // "BUSINESS" or "PERSON"
+  position  String?  // cargo de la persona (opcional, para personas sin nombre)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  locations Location[]
+  photos    Photo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("entities")
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  entityId  String
+  entity    Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  address   String
+  latitude  Float?
+  longitude Float?
+  phone     String?
+  reviews   Review[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("locations")
+}
+
+model Photo {
+  id        String   @id @default(uuid())
+  entityId  String
+  entity    Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
+
+  @@map("photos")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  locationId String
+  location  Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int      // 1-5 estrellas (positiva o negativa)
+  comment   String   // solo texto y emoticones
+  category  String   // SERVICE, PRODUCT, PRICE, AMBIENTE, ENTREGA
+  thumbsUp  Int      @default(0)
+  thumbsDown Int     @default(0)
+  isApproved Boolean  @default(false) // Para aprobación sí/no del producto
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reviews")
+}
