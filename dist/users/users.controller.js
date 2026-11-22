@@ -33,6 +33,12 @@ let UsersController = class UsersController {
     remove(id) {
         return this.usersService.remove(id);
     }
+    async getRespuestas(id) {
+        return this.usersService.getUserRespuestas(id);
+    }
+    async responderEncuesta(body) {
+        return this.usersService.crearRespuestaEncuesta(body);
+    }
 };
 exports.UsersController = UsersController;
 __decorate([
@@ -66,6 +72,22 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)(':id/encuestas-respuestas'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get user survey responses' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getRespuestas", null);
+__decorate([
+    (0, common_1.Post)('responder'),
+    (0, swagger_1.ApiOperation)({ summary: 'Submit survey answer' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "responderEncuesta", null);
 exports.UsersController = UsersController = __decorate([
     (0, swagger_1.ApiTags)('users'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

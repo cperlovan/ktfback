@@ -37,4 +37,30 @@ export declare class UsersController {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    getRespuestas(id: string): Promise<({
+        encuesta: {
+            id: string;
+            nombreEntidad: string;
+            tipoEntidad: string;
+        };
+    } & {
+        id: string;
+        userId: string;
+        encuestaId: string;
+        preguntaId: string | null;
+        respuesta: string;
+        tipoRespuesta: string;
+        createdAt: Date;
+        updatedAt: Date;
+    })[]>;
+    responderEncuesta(body: any): Promise<{
+        id: string;
+        userId: string;
+        encuestaId: string;
+        preguntaId: string | null;
+        respuesta: string;
+        tipoRespuesta: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

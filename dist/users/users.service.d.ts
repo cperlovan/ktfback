@@ -3,17 +3,17 @@ export declare class UsersService {
     private prisma;
     constructor(prisma: PrismaService);
     findAll(): Promise<{
-        id: string;
         email: string;
         name: string;
+        id: string;
         role: string;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
     findOne(id: string): Promise<{
-        id: string;
         email: string;
         name: string;
+        id: string;
         role: string;
         createdAt: Date;
         updatedAt: Date;
@@ -22,9 +22,9 @@ export declare class UsersService {
         name?: string;
         role?: string;
     }): Promise<{
-        id: string;
         email: string;
         name: string;
+        id: string;
         role: string;
         updatedAt: Date;
     }>;
@@ -34,6 +34,38 @@ export declare class UsersService {
         password: string;
         name: string | null;
         role: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    getUserRespuestas(userId: string): Promise<({
+        encuesta: {
+            id: string;
+            nombreEntidad: string;
+            tipoEntidad: string;
+        };
+    } & {
+        id: string;
+        userId: string;
+        encuestaId: string;
+        preguntaId: string | null;
+        respuesta: string;
+        tipoRespuesta: string;
+        createdAt: Date;
+        updatedAt: Date;
+    })[]>;
+    crearRespuestaEncuesta(data: {
+        userId: string;
+        encuestaId: string;
+        preguntaId?: string;
+        respuesta: string;
+        tipoRespuesta: string;
+    }): Promise<{
+        id: string;
+        userId: string;
+        encuestaId: string;
+        preguntaId: string | null;
+        respuesta: string;
+        tipoRespuesta: string;
         createdAt: Date;
         updatedAt: Date;
     }>;

@@ -1,5 +1,10 @@
 import { IsString, IsOptional, IsIn } from 'class-validator';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export enum EntityType {
+  BUSINESS = 'BUSINESS',
+  PERSON = 'PERSON',
+}
 
 export class UpdateEntityDto {
   @ApiPropertyOptional()
@@ -7,10 +12,10 @@ export class UpdateEntityDto {
   @IsString()
   name?: string;
 
-  @ApiPropertyOptional({ enum: ['BUSINESS', 'PERSON'] })
+  @ApiProperty({ enum: EntityType })
   @IsOptional()
-  @IsIn(['BUSINESS', 'PERSON'])
-  type?: string;
+  @IsIn([EntityType.BUSINESS, EntityType.PERSON])
+  type?: EntityType;
 
   @ApiPropertyOptional()
   @IsOptional()

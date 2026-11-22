@@ -16,21 +16,25 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  reviews   Review[]
-  entities  Entity[]
+  reviews          Review[]
+  entities         Entity[]
+  encuestas        Encuesta[]
+  respuestasEncuesta RespuestaEncuesta[]
 
   @@map("users")
 }
 
 model Entity {
   id        String   @id @default(uuid())
+  entityId  String   @unique 
   name      String?
   type      String   // "BUSINESS" or "PERSON"
-  position  String?  // cargo de la persona (opcional, para personas sin nombre)
+  position  String?  
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   locations Location[]
   photos    Photo[]
+  // reviews   Review[]  // Comentado temporalmente
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -38,14 +42,14 @@ model Entity {
 }
 
 model Location {
-  id        String   @id @default(uuid())
-  entityId  String
-  entity    Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
-  address   String
-  latitude  Float?
-  longitude Float?
-  phone     String?
-  reviews   Review[]
+  id         String   @id @default(uuid())
+  entityId   String
+  entity     Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  address    String
+  latitude   Float?
+  longitude  Float?
+  phone      String?
+  reviews    Review[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -53,11 +57,11 @@ model Location {
 }
 
 model Photo {
-  id        String   @id @default(uuid())
-  entityId  String
-  entity    Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
-  url       String
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  entityId   String
+  entity     Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  url        String
+  createdAt  DateTime @default(now())
 
   @@map("photos")
 }
@@ -68,6 +72,7 @@ model Review {
   location  Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Elimina la línea entity aquí temporalmente
   rating    Int      // 1-5 estrellas (positiva o negativa)
   comment   String   // solo texto y emoticones
   category  String   // SERVICE, PRODUCT, PRICE, AMBIENTE, ENTREGA
@@ -78,4 +83,50 @@ model Review {
   updatedAt DateTime @updatedAt
 
   @@map("reviews")
+}
+
+
+model Encuesta {
+  id        String   @id @default(uuid())
+  nombreEntidad String
+  tipoEntidad String   // PRODUCTO, LOCAL, PERSONA, OTRO
+  descripcion String?
+  activo      Boolean  @default(true)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  preguntas   Pregunta[]
+  respuestas  RespuestaEncuesta[]  @relation("respuestasEncuesta")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("encuestas")
+}
+
+model Pregunta {
+  id        String   @id @default(uuid())
+  texto     String
+  tipo      String   // ESTRELLAS, TEXTO, MULTIPLE
+  obligatoria Boolean  @default(true)
+  opciones  String? // JSON para opciones tipo MULTIPLE
+  encuestaId String
+  encuesta  Encuesta @relation(fields: [encuestaId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("preguntas")
+}
+
+model RespuestaEncuesta {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  encuestaId String
+  encuesta  Encuesta @relation("respuestasEncuesta", fields: [encuestaId], references: [id], onDelete: Cascade)
+  preguntaId String?   // Optional: for tracking which question was answered
+  respuesta  String   // La respuesta del usuario (texto, ID de opción, etc.)
+  tipoRespuesta String // "TEXT", "RATING", "SELECT", etc.
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("respuestas_encuestas")
 }

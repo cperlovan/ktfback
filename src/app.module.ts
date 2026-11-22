@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { EntitiesModule } from './entities/entities.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { EncuestasModule } from './encuestas/encuestas.module';
 import { PrismaService } from './prisma/prisma.service';
 
 @Module({
@@ -16,6 +17,7 @@ import { PrismaService } from './prisma/prisma.service';
     UsersModule,
     EntitiesModule,
     ReviewsModule,
+    EncuestasModule,
   ],
   providers: [PrismaService],
 })

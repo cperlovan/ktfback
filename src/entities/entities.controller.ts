@@ -22,13 +22,23 @@ import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 @ApiBearerAuth('JWT-auth')
 @Controller('entities')
 export class EntitiesController {
-  constructor(private entitiesService: EntitiesService) {}
+  constructor(private entitiesService: EntitiesService) { }
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new entity (business or person)' })
-  create(@Body() createEntityDto: CreateEntityDto, @Request() req) {
-    return this.entitiesService.create(createEntityDto, req.user.id);
+@Post()
+create(@Body() body: any, @Request() req) {
+  const { name, type, position } = body;
+  const userId = req.user.id;
+  
+  if (!name || !type) {
+    return { error: 'name y type son requeridos' };
   }
+  
+  return this.entitiesService.create(name, type, userId, position);
+}
+
+
+
+
 
   @Get()
   @ApiOperation({ summary: 'Get all entities' })

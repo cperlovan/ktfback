@@ -57,4 +57,36 @@ export class UsersService {
       where: { id },
     });
   }
+
+  async getUserRespuestas(userId: string) {
+    return this.prisma.respuestaEncuesta.findMany({
+      where: { userId },
+      include: {
+        encuesta: {
+          select: { id: true, nombreEntidad: true, tipoEntidad: true }
+        }
+      }
+    });
+  }
+
+  async crearRespuestaEncuesta(data: {
+    userId: string;
+    encuestaId: string;
+    preguntaId?: string;
+    respuesta: string;
+    tipoRespuesta: string;
+  }) {
+    return this.prisma.respuestaEncuesta.create({
+      data: {
+        userId: data.userId,
+        encuestaId: data.encuestaId,
+        preguntaId: data.preguntaId,
+        respuesta: data.respuesta,
+        tipoRespuesta: data.tipoRespuesta
+      }
+    });
+  }
+
+  
+
 }

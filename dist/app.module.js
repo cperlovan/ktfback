@@ -11,6 +11,9 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
+const entities_module_1 = require("./entities/entities.module");
+const reviews_module_1 = require("./reviews/reviews.module");
+const encuestas_module_1 = require("./encuestas/encuestas.module");
 const prisma_service_1 = require("./prisma/prisma.service");
 let AppModule = class AppModule {
 };
@@ -24,6 +27,9 @@ exports.AppModule = AppModule = __decorate([
             }),
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
+            entities_module_1.EntitiesModule,
+            reviews_module_1.ReviewsModule,
+            encuestas_module_1.EncuestasModule,
         ],
         providers: [prisma_service_1.PrismaService],
     })

@@ -63,6 +63,27 @@ let UsersService = class UsersService {
             where: { id },
         });
     }
+    async getUserRespuestas(userId) {
+        return this.prisma.respuestaEncuesta.findMany({
+            where: { userId },
+            include: {
+                encuesta: {
+                    select: { id: true, nombreEntidad: true, tipoEntidad: true }
+                }
+            }
+        });
+    }
+    async crearRespuestaEncuesta(data) {
+        return this.prisma.respuestaEncuesta.create({
+            data: {
+                userId: data.userId,
+                encuestaId: data.encuestaId,
+                preguntaId: data.preguntaId,
+                respuesta: data.respuesta,
+                tipoRespuesta: data.tipoRespuesta
+            }
+        });
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([

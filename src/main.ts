@@ -15,8 +15,10 @@ async function bootstrap() {
   // Configurar CORS nativo de NestJS para permitir el frontend en localhost:3001
   app.enableCors({
     origin: ['http://localhost:3001', 'http://192.168.51.47:3001'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    optionsSuccessStatus: 200,
   });
 
   app.useGlobalPipes(
