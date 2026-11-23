@@ -8,10 +8,13 @@ import {
   Param,
   UseGuards,
   Request,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { EncuestasService } from './encuestas.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { CreateEncuestaDto } from './dto/create-encuesta.dto';
+import { UpdateEncuestaDto } from './dto/update-encuesta.dto';
 
 @ApiTags('encuestas')
 @UseGuards(JwtAuthGuard)
@@ -29,13 +32,18 @@ export class EncuestasController {
   @Post()
   @ApiOperation({ summary: 'Create a new encuesta' })
   @ApiResponse({ status: 201, description: 'Encuesta created successfully' })
-  create(@Request() req: any, @Body() body: any) {
-    const userId = req.user.sub;
+  create(@Request() req: any, @Body() body: CreateEncuestaDto) {
+    const userId = req.user?.sub || req.user?.id || req.user?.userId;
+    if (!userId) {
+      throw new UnauthorizedException('No se pudo identificar el usuario en el token');
+    }
+
     return this.encuestasService.create(
       body.nombreEntidad,
       body.tipoEntidad,
       body.descripcion,
       userId,
+      body.preguntas ?? [],
     );
   }
 
@@ -47,7 +55,8 @@ export class EncuestasController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update encuesta' })
-  update(@Param('id') id: string, @Body() datos: any) {
+  @ApiResponse({ status: 200, description: 'Encuesta updated successfully' })
+  update(@Param('id') id: string, @Body() datos: UpdateEncuestaDto) {
     return this.encuestasService.update(id, datos);
   }
 
